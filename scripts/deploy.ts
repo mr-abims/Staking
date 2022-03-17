@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // We require the Hardhat Runtime Environment explicitly here. This is optional
 // but useful for running the script in a standalone fashion through `node <script>`.
 //
@@ -6,22 +7,30 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+  const ownerAdress = "0x6315AE672539D1d843F0581a11102a77A948f671";
+  const ownerSigner = await ethers.getSigner(ownerAdress);
+  // @ts-ignore
+  await hre.network.provider.request({
+    method: "hardhat_impersonateAccount",
+    params: [ownerAdress],
+  });
+  // @ts-ignore
+  await network.provider.send("hardhat_setBalance", [
+    ownerAdress,
+    "0x20000000000000000000000",
+  ]);
 
-  // We get the contract to deploy
-  const Greeter = await ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const TokenContract = await ethers.getContractFactory("BoredApe");
+  const tokencontract = await TokenContract.connect(ownerSigner).deploy(
+    "BoredApe",
+    "BRT"
+  );
+  await tokencontract.deployed();
+  console.log("token address", tokencontract.address);
 
-  await greeter.deployed();
-
-  console.log("Greeter deployed to:", greeter.address);
+  const balance = await tokencontract.balanceOf(ownerAdress);
+  console.log(`owner balance is ${balance}`);
 }
-
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
 main().catch((error) => {
