@@ -23,7 +23,7 @@ const config: HardhatUserConfig = {
       forking: {
         // @ts-ignore
         url: process.env.ALCHEMY_KEY,
-        accounts: [RINKEBY_PRIVATE_KEY],
+        accounts: [process.env.PRIVATE_KEY],
       },
     },
     ropsten: {
